@@ -19,6 +19,7 @@ def handlesignup(request):
         try:
             if User.objects.get(username=username):
                 messages.warning(request,"Username already used")
+                return redirect('/signup/')
         except :
             pass
 
