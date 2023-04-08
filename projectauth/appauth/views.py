@@ -114,8 +114,21 @@ def handlelogin(request):
 
     return render(request,'login.html')
 
+
+
+
+# For Logout 
+
 def handlelogout(request):
     logout(request)
     messages.success(request,"Logout Success")
     return redirect('/login/')
+
+
+# for resetting password 
+
+class RequestResetEmailView(View):
+    def get(self,request):
+        return render(request,"request-reset-email.html")
+
     
