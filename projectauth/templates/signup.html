@@ -115,9 +115,10 @@
             <label for="chk" aria-hidden="true">Sign up</label>
             {%if messages%}
             {% for message in messages%}
-            <div class="alert alert-warning alert-dismissible fade show" role="alert" style="color:white;text-align:center">
-                {{message}}
-            </div>
+                        <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                            <strong>Note: {{message}}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
             {%endfor%}
             {%endif%}
             <input type="text" name="username" placeholder="User name" required="">
