@@ -127,9 +127,9 @@ MESSAGES_TAG={
     messages.error:'danger'
 }
 
-EMAIL_HOST: 'smpt.gmail.com'
-EMAIL_HOST_USER:'guptaarvind2602@gmail.com'
-EMAIL_HOST_PASSWORD:'Arvind@2602'
-EMAIL_PORT:'587'
-EMAIL_USE_TLS:True
-EMAIL_BACKEND:'django.core.mail.backends.smpt.EmailBackend'  
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_HOST_USER='guptaarvind2602@gmail.com'
+EMAIL_HOST_PASSWORD='fevasinlkrjhqkpd'
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
