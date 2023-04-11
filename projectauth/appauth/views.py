@@ -25,6 +25,10 @@ from django.conf import settings
 # Getting token from utils
 from .utils import generate_token,TokenGenerator
 
+# Reset Password Generaters
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
+
 #threading
 import threading
 
@@ -130,5 +134,64 @@ def handlelogout(request):
 class RequestResetEmailView(View):
     def get(self,request):
         return render(request,"request-reset-email.html")
-
     
+    def post(self,request):
+        email=request.POST['email']
+        user=User.objects.filter(email=email)
+
+        if user.exists():
+            current_site=get_current_site(request)
+            email_subject='[Reset Your Password]'
+            message=render_to_string('/reset-user-password.html',{
+                'domain':current_site.domain,
+                'UID':urlsafe_base64_encode(force_bytes(user[0].pk)),
+                'token':PasswordResetTokenGenerator.make_token(user[0])
+            })
+
+            email_message=EmailMessage(email_subject,message,settings.EMAIL_USER_HOST,[email])
+            EmailThread(email_message).start()
+            messages.info(request,"Email  for password reset is been sent")
+            return render(request,'/request-reset-email.html')
+        
+class SetNewPasswordView(View):
+    def get(self,request,uidb64,token):
+        context={
+            'uid':uidb64,
+            'token':token,
+        }
+        try:
+            user_id=force_text(urlsafe_base64_decode)
+            user=User.objects.get(pk=user_id)
+            if not PasswordResetTokenGenerator().check_token(user,token):
+                messages.warning(request,"Password Rest Link is Invalid")
+                return render(request,'/request-reset-password.html')
+        
+        except DjangoUnicodeDecodeError as identifier:
+            pass
+
+        return render(request,'/set-new-password.html')
+    
+    def post(self,request,uidb64,token):
+        context={
+            'uid':uidb64,
+            'token':token,
+        } 
+        password=request.POST['password']
+        cpassword=request.POST['cpassword']
+
+        if password!=cpassword:
+            messages.warning(request,"Password doesnot match")
+            return render(request,'/set-new-password.html',context)
+        
+        try:
+            user_id=force_text(urlsafe_base64_decode)
+            user=User.objects.get(pk=user_id)
+            user.set_password(password)
+            user.save()
+            messages.success(request,"Password reset succesfully")
+            return redirect(request,'/login/')
+
+        except DjangoUnicodeDecodeError as identifier:
+            messages.error(request,"Something went wrong")
+            return redirect(request,'/set-new-password.html',context )
+

@@ -16,7 +16,7 @@ Including another URLconf
 
 
 from django.urls import path
-from .views import handlesignup,home,handlelogin,handlelogout,ActivateAccountView,RequestResetEmailView
+from .views import handlesignup,home,handlelogin,handlelogout,ActivateAccountView,RequestResetEmailView,SetNewPasswordView
 
 
 urlpatterns = [
@@ -26,4 +26,6 @@ urlpatterns = [
    path('logout/',handlelogout),
    path('activate/<uidb64>/ <token>',ActivateAccountView.as_view(),name='activate'),
    path('request-reset-email/',RequestResetEmailView.as_view(),name="request-reset-email"),
+   path('set-new-password/<uid64>/<token>',SetNewPasswordView.as_view(),name="set-new-password"),
+
 ]
